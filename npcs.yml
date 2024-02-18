@@ -1,0 +1,44 @@
+# NPC Data Configuration
+
+# Example NPC Data
+npcs:
+  npc1:
+    owner: "Player1"
+    position:
+      x: 100
+      y: 70
+      z: 200
+    health: 100.0
+    behavior:
+      interact_radius: 4
+      mine_radius: 4
+      build_radius: 10
+      attack_radius: 10
+      attack_damage: 2.0
+      heal_rate: 1.0
+      follow_distance: 5
+      walk_speed: 0.2
+      run_speed: 0.4
+    appearance:
+      name_tag: "&bNPC Bot"
+      owner_tag: true
+  npc2:
+    owner: "Player2"
+    position:
+      x: -50
+      y: 65
+      z: 150
+    health: 100.0
+    behavior:
+      interact_radius: 4
+      mine_radius: 4
+      build_radius: 10
+      attack_radius: 10
+      attack_damage: 2.0
+      heal_rate: 1.0
+      follow_distance: 5
+      walk_speed: 0.2
+      run_speed: 0.4
+    appearance:
+      name_tag: "&bNPC Bot"
+      owner_tag: true
