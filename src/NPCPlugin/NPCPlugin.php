@@ -7,14 +7,12 @@ use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\item\Item;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Player;
-use pocketmine\utils\Config;
 
 class NPCPlugin extends PluginBase implements Listener {
 
-    public function onEnable() {
+    public function onEnable(): void {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->saveResource("npcs.yml");
     }
@@ -22,15 +20,17 @@ class NPCPlugin extends PluginBase implements Listener {
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
         if ($command->getName() === "buynpc" && $sender instanceof Player) {
             // Check if player has enough money to buy NPC
-            $money = $this->getEconomyAPI()->myMoneyFunction($sender->getName()); // Implement your money checking function here
-            $npcCost = 100; // Set the cost of the NPC
-            if ($money < $npcCost) {
+            $npcCost = 100000; // Set the cost of the NPC
+            if (!$this->hasEnoughMoney($sender, $npcCost)) {
                 $sender->sendMessage("You don't have enough money to buy an NPC.");
                 return false;
             }
             
             // Deduct money from player
-            $this->getEconomyAPI()->reduceMoney($sender->getName(), $npcCost); // Implement your money deduction function here
+            if (!$this->reduceMoney($sender, $npcCost)) {
+                $sender->sendMessage("Error: Failed to deduct money.");
+                return false;
+            }
             
             // Spawn NPC
             $npc = new NPC($sender->getLevel(), Entity::createEntity("Human", $sender->getLevel()->getChunk($sender->getX() >> 4, $sender->getZ() >> 4), Human::createBaseNBT($sender->getPosition()->asVector3()->add(0, 1))));
@@ -43,10 +43,24 @@ class NPCPlugin extends PluginBase implements Listener {
     }
 
     // Handle player interaction event to make NPC follow the player
-    public function onPlayerInteract(PlayerInteractEvent $event) {
+    public function onPlayerInteract(PlayerInteractEvent $event): void {
         $player = $event->getPlayer();
         $block = $event->getBlock();
         $item = $event->getItem();
 
+    }
+
+    // Check if player has enough money
+    private function hasEnoughMoney(Player $player, float $amount): bool {
+        // Implement your money checking function here
+        // Example: return $this->getEconomyAPI()->myMoneyCheckFunction($player->getName()) >= $amount;
+        return true; // Placeholder, replace with actual implementation
+    }
+
+    // Deduct money from player
+    private function reduceMoney(Player $player, float $amount): bool {
+        // Implement your money deduction function here
+        // Example: return $this->getEconomyAPI()->reduceMoney($player->getName(), $amount);
+        return true; // Placeholder, replace with actual implementation
     }
 }
