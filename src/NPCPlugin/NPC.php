@@ -4,7 +4,7 @@ namespace NPCPlugin\NPC;
 
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
-use pocketmine\event\entity\EntityDamageEvent; // Changed from EntityDamageByEntityEvent
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
@@ -33,7 +33,7 @@ class NPC extends Human {
     }
 
     public function attack(EntityDamageEvent $source): void { // Changed parameter type
-        $damager = $source->getDamager();
+        $damager = $source->getEntity();
         if ($damager instanceof Player && $damager->getName() !== $this->owner) {
             $source->setBaseDamage(2); // Changed to setBaseDamage
             $this->heal(2); // Heal the NPC by 1 heart (2 health points)
@@ -81,4 +81,3 @@ class NPC extends Human {
         $player->sendDataPacket($pk);
     }
 }
-
