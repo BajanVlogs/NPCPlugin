@@ -2,7 +2,7 @@ name: NPCPlugin
 version: 1.0.0
 api: [5.0.0]
 author: BajanVlogs
-main: NPCPlugin\Main
+main: NPCPlugin\NPCPlugin
 description: A plugin that adds customizable NPC companions to the game.
 commands:
   buynpc:
