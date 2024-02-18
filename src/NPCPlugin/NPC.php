@@ -4,13 +4,16 @@ namespace NPCPlugin\NPC;
 
 use pocketmine\entity\Entity;
 use pocketmine\entity\Human;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent; // Changed from EntityDamageByEntityEvent
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
+use pocketmine\network\mcpe\protocol\AddActorPacket;
+use pocketmine\network\mcpe\protocol\types\EntityLegacyIds;
+use pocketmine\math\Vector3;
 
 class NPC extends Human {
-   
- protected $owner;
+
+    protected $owner;
     protected $target;
 
     public function setOwner(string $name) {
@@ -29,10 +32,10 @@ class NPC extends Human {
         return 100; // Set NPC's health to 100 hearts
     }
 
-    public function attack(EntityDamageByEntityEvent $source): void {
+    public function attack(EntityDamageEvent $source): void { // Changed parameter type
         $damager = $source->getDamager();
         if ($damager instanceof Player && $damager->getName() !== $this->owner) {
-            $source->setDamage(2); // Deal 1 heart (2 damage points) of damage to the target
+            $source->setBaseDamage(2); // Changed to setBaseDamage
             $this->heal(2); // Heal the NPC by 1 heart (2 health points)
         }
         parent::attack($source);
@@ -40,7 +43,7 @@ class NPC extends Human {
 
     public function onUpdate(int $currentTick): bool {
         $owner = $this->getOwner();
-        $player = $this->getLevel()->getNearestEntity($this, 5, Player::class);
+        $player = $this->getLevel()->getNearestEntity($this, 5, Player::class); // Changed namespace
         if ($player instanceof Player && $player->getName() === $owner) {
             $this->target = $player;
         } elseif (!$this->target instanceof Player) {
@@ -48,8 +51,8 @@ class NPC extends Human {
             return parent::onUpdate($currentTick);
         }
 
-        $diffX = $this->target->x - $this->x;
-        $diffZ = $this->target->z - $this->z;
+        $diffX = $this->target->getX() - $this->getX(); // Changed to getX()
+        $diffZ = $this->target->getZ() - $this->getZ(); // Changed to getZ()
         $distance = sqrt($diffX ** 2 + $diffZ ** 2);
 
         if ($distance > 0.1) { // If distance is greater than 0.1, move towards the target
@@ -78,3 +81,4 @@ class NPC extends Human {
         $player->sendDataPacket($pk);
     }
 }
+
